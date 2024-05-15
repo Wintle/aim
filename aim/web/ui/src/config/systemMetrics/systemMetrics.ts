@@ -16,5 +16,5 @@ export const systemMetricsDict: systemMetricsDictType = {
   __system__npu_ai_cpu_percent: 'NPU AI CPU (%)',
   __system__npu_ctrl_cpu_percent: 'NPU Control CPU (%)',
   __system__npu_memory_percent: 'NPU Memory (%)',
-  __system__npu_memory_bw_percent: 'NPU Memory Bandwidth (%)'
+  __system__npu_memory_bw_percent: 'NPU Memory Bandwidth (%)',
 };

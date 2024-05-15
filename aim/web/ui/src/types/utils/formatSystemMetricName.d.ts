@@ -7,8 +7,6 @@ export type systemMetricsDictType = {
   __system__gpu_memory_percent: string;
   __system__gpu_power_watts: string;
   __system__gpu_temp: string;
-
-  // NPU related metrics
   __system__npu_chip_id: string;
   __system__npu_power: string;
   __system__npu_temperature: string;
