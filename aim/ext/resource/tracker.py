@@ -159,6 +159,14 @@ class ResourceTracker(object):
                     context={'gpu': gpu_idx}
                 )
 
+        for npu_idx, npu in enumerate(stat.npus):
+            for resource, usage in npu.items():
+                self._tracker()(
+                    usage,
+                    name='{}{}'.format(AIM_RESOURCE_METRIC_PREFIX, resource),
+                    context={'npu': npu_idx}
+                )
+
     def _stat_collector(self):
         """
             Statistics collecting thread body

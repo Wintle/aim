@@ -2,9 +2,11 @@ import psutil
 import json
 from typing import List
 
+
 from aim.ext.resource.utils import round10e5
 
 import aim.ext.pynvml as nvml
+import aim.ext.pynpuinfo as pynpuinfo
 
 
 class StatDict(object):
@@ -75,9 +77,10 @@ class StatDict(object):
 
         return aggregated_stat
 
-    def __init__(self, system: dict = None, gpus: List[dict] = None):
+    def __init__(self, system: dict = None, gpus: List[dict] = None,npus:List[dict] = None):
         self.system = system or {}
         self.gpus = gpus or []
+        self.npus = npus or []
 
     def __str__(self):
         return json.dumps(self.to_dict())
@@ -89,6 +92,7 @@ class StatDict(object):
         return {
             'system': self.system,
             'gpus': self.gpus,
+            'npus': self.npus,
         }
 
 
@@ -98,8 +102,8 @@ class Stat(object):
         self._process = process
 
         # Get statistics
-        system, gpus = self.get_stats()
-        self._stat = StatDict(system, gpus)
+        system, gpus, npus = self.get_stats()
+        self._stat = StatDict(system, gpus, npus)
 
     @property
     def process(self):
@@ -116,6 +120,10 @@ class Stat(object):
     @property
     def gpus(self):
         return self._stat.gpus
+
+    @property
+    def npus(self):
+        return self._stat.npus
 
     def get_stats(self):
         """
@@ -188,4 +196,20 @@ class Stat(object):
         except nvml.NVMLError:
             pass
 
-        return system, gpus
+        npus = []
+        if pynpuinfo.is_enabled():
+            for npu_idx,info in pynpuinfo.get_info():
+                npus.append(
+                    {
+                        "npu_power": round(info.power, 5),
+                        "npu_temperature": round(info.temperature, 5),
+                        "npu_ai_core_percent": round(info.ai_core, 5),
+                        "npu_ai_cpu_percent": round(info.ai_cpu, 5),
+                        "npu_ctrl_cpu_percent": round(info.ctrl_cpu, 5),
+                        "npu_memory_percent": round(info.memory, 5),
+                        "npu_memory_bw_percent": round(info.memory_bw, 5)
+                    }
+                )
+
+
+        return system, gpus ,npus
