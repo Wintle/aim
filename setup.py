@@ -74,6 +74,7 @@ REQUIRED = [
     'requests',
     'websockets',
     'boto3',
+    'pexpect~=4.9.0'
 ]
 
 
