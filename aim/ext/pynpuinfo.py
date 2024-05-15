@@ -28,7 +28,6 @@ class NpuInfo:
                 f"ai_core={self.ai_core}, ai_cpu={self.ai_cpu}, ctrl_cpu={self.ctrl_cpu}, "
                 f"memory={self.memory}, memory_bw={self.memory_bw})")
 
-@Singleton
 class NpuMonitor:
     def __init__(self, command = _DEFAULT_COMMAND):
         self.command = command

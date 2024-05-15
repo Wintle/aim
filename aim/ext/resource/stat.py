@@ -198,16 +198,16 @@ class Stat(object):
 
         npus = []
         if pynpuinfo.is_enabled():
-            for npu_idx,info in pynpuinfo.get_info():
+            for npu_idx,info in pynpuinfo.get_info().items():
                 npus.append(
                     {
-                        "npu_power": round(info.power, 5),
-                        "npu_temperature": round(info.temperature, 5),
-                        "npu_ai_core_percent": round(info.ai_core, 5),
-                        "npu_ai_cpu_percent": round(info.ai_cpu, 5),
-                        "npu_ctrl_cpu_percent": round(info.ctrl_cpu, 5),
-                        "npu_memory_percent": round(info.memory, 5),
-                        "npu_memory_bw_percent": round(info.memory_bw, 5)
+                        "npu_power": round10e5(info.power),
+                        "npu_temperature": round10e5(info.temperature),
+                        "npu_ai_core_percent": round10e5(info.ai_core*100),
+                        "npu_ai_cpu_percent": round10e5(info.ai_cpu*100),
+                        "npu_ctrl_cpu_percent": round10e5(info.ctrl_cpu*100),
+                        "npu_memory_percent": round10e5(info.memory*100),
+                        "npu_memory_bw_percent": round10e5(info.memory_bw*100)
                     }
                 )
 
