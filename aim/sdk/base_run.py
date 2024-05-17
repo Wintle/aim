@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, Optional, Union
 from typing import TYPE_CHECKING
 import pathlib
@@ -37,12 +38,11 @@ class BaseRun:
             self.hash = run_hash
         else:
             if run_hash is None:
-                self.hash = generate_run_hash()
+                self.hash = os.getenv('AIM_RUN_HASH') or generate_run_hash()
             elif self.repo.run_exists(run_hash):
                 self.hash = run_hash
             else:
-                # raise MissingRunError(f'Cannot find Run {run_hash} in aim Repo {self.repo.path}.')
-                self.hash = run_hash
+                raise MissingRunError(f'Cannot find Run {run_hash} in aim Repo {self.repo.path}.')
             self._lock = self.repo.request_run_lock(self.hash)
             self._lock.lock(force=force_resume)
 
