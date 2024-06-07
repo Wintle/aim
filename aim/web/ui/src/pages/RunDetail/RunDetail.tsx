@@ -100,7 +100,8 @@ function RunDetail(): React.FunctionComponentElement<React.ReactNode> {
   const { runHash } = useParams<{ runHash: string }>();
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const noHeader = _.includes(search, 'noHeader=1');
   const runData = useModel(runDetailAppModel);
 
   let runsOfExperimentRequestRef: any = null;
@@ -278,173 +279,184 @@ function RunDetail(): React.FunctionComponentElement<React.ReactNode> {
     <ErrorBoundary>
       <section className='RunDetail' ref={containerRef}>
         <div className='RunDetail__runDetailContainer'>
-          <div className='RunDetail__runDetailContainer__appBarContainer'>
-            <div className='container RunDetail__runDetailContainer__appBarContainer__appBarBox'>
-              <div className='RunDetail__runDetailContainer__appBarContainer__appBarBox__runInfoBox'>
-                <ControlPopover
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                  anchor={({ onAnchorClick, opened }) => (
-                    <div
-                      className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox'
-                      onClick={onAnchorClick}
-                    >
-                      {!runData?.isRunInfoLoading ? (
-                        <>
-                          <div className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__appBarTitleBoxWrapper'>
-                            <Tooltip
-                              title={`${
-                                runData?.runInfo?.experiment?.name || 'default'
-                              } / ${runData?.runInfo?.name || ''}`}
-                            >
-                              <div className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__container'>
-                                <Link
-                                  to={PathEnum.Experiment.replace(
-                                    ':experimentId',
-                                    runData?.runInfo?.experiment?.id,
-                                  )}
-                                  className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__experimentName'
+          {!noHeader ? (
+            <>
+              <div className='RunDetail__runDetailContainer__appBarContainer'>
+                <div className='container RunDetail__runDetailContainer__appBarContainer__appBarBox'>
+                  <div className='RunDetail__runDetailContainer__appBarContainer__appBarBox__runInfoBox'>
+                    <ControlPopover
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                      }}
+                      anchor={({ onAnchorClick, opened }) => (
+                        <div
+                          className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox'
+                          onClick={onAnchorClick}
+                        >
+                          {!runData?.isRunInfoLoading ? (
+                            <>
+                              <div className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__appBarTitleBoxWrapper'>
+                                <Tooltip
+                                  title={`${
+                                    runData?.runInfo?.experiment?.name ||
+                                    'default'
+                                  } / ${runData?.runInfo?.name || ''}`}
                                 >
-                                  <Text tint={100} size={16} weight={600}>
-                                    {runData?.runInfo?.experiment?.name ||
-                                      'default'}
-                                  </Text>
-                                </Link>
-                                <Text
-                                  tint={100}
-                                  size={16}
-                                  weight={600}
-                                  className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__runName'
-                                >
-                                  {' '}
-                                  / {runData?.runInfo?.name || ''}
-                                </Text>
-                              </div>
-                            </Tooltip>
+                                  <div className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__container'>
+                                    <Link
+                                      to={PathEnum.Experiment.replace(
+                                        ':experimentId',
+                                        runData?.runInfo?.experiment?.id,
+                                      )}
+                                      className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__experimentName'
+                                    >
+                                      <Text tint={100} size={16} weight={600}>
+                                        {runData?.runInfo?.experiment?.name ||
+                                          'default'}
+                                      </Text>
+                                    </Link>
+                                    <Text
+                                      tint={100}
+                                      size={16}
+                                      weight={600}
+                                      className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__runName'
+                                    >
+                                      {' '}
+                                      / {runData?.runInfo?.name || ''}
+                                    </Text>
+                                  </div>
+                                </Tooltip>
 
-                            <Button
-                              disabled={
-                                runData?.isExperimentsLoading ||
-                                runData?.isRunInfoLoading
-                              }
-                              color={opened ? 'primary' : 'default'}
-                              size='xSmall'
-                              className={classNames(
-                                'RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__buttonSelectToggler',
-                                { opened: opened },
-                              )}
-                              withOnlyIcon
-                            >
-                              <Icon name={opened ? 'arrow-up' : 'arrow-down'} />
-                            </Button>
-                            <StatusLabel
-                              status={
-                                runData?.runInfo?.end_time ? 'alert' : 'success'
-                              }
-                              title={
-                                runData?.runInfo?.end_time
-                                  ? 'Finished'
-                                  : 'In Progress'
-                              }
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <div className='flex'>
-                          <Skeleton
-                            className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__Skeleton'
-                            variant='rect'
-                            height={24}
-                            width={340}
-                          />
-                          <Skeleton variant='rect' height={24} width={70} />
+                                <Button
+                                  disabled={
+                                    runData?.isExperimentsLoading ||
+                                    runData?.isRunInfoLoading
+                                  }
+                                  color={opened ? 'primary' : 'default'}
+                                  size='xSmall'
+                                  className={classNames(
+                                    'RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__buttonSelectToggler',
+                                    { opened: opened },
+                                  )}
+                                  withOnlyIcon
+                                >
+                                  <Icon
+                                    name={opened ? 'arrow-up' : 'arrow-down'}
+                                  />
+                                </Button>
+                                <StatusLabel
+                                  status={
+                                    runData?.runInfo?.end_time
+                                      ? 'alert'
+                                      : 'success'
+                                  }
+                                  title={
+                                    runData?.runInfo?.end_time
+                                      ? 'Finished'
+                                      : 'In Progress'
+                                  }
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <div className='flex'>
+                              <Skeleton
+                                className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__Skeleton'
+                                variant='rect'
+                                height={24}
+                                width={340}
+                              />
+                              <Skeleton variant='rect' height={24} width={70} />
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
-                  )}
-                  component={
-                    <RunSelectPopoverContent
-                      getRunsOfExperiment={getRunsOfExperiment}
-                      experimentsData={runData?.experimentsData}
-                      experimentId={runData?.experimentId}
-                      runsOfExperiment={runData?.runsOfExperiment}
-                      runInfo={runData?.runInfo}
-                      isRunsOfExperimentLoading={
-                        runData?.isRunsOfExperimentLoading
+                      component={
+                        <RunSelectPopoverContent
+                          getRunsOfExperiment={getRunsOfExperiment}
+                          experimentsData={runData?.experimentsData}
+                          experimentId={runData?.experimentId}
+                          runsOfExperiment={runData?.runsOfExperiment}
+                          runInfo={runData?.runInfo}
+                          isRunsOfExperimentLoading={
+                            runData?.isRunsOfExperimentLoading
+                          }
+                          isRunInfoLoading={runData?.isRunInfoLoading}
+                          isLoadMoreButtonShown={runData?.isLoadMoreButtonShown}
+                          onRunsSelectToggle={onRunsSelectToggle}
+                          dateNow={dateNow}
+                        />
                       }
-                      isRunInfoLoading={runData?.isRunInfoLoading}
-                      isLoadMoreButtonShown={runData?.isLoadMoreButtonShown}
-                      onRunsSelectToggle={onRunsSelectToggle}
-                      dateNow={dateNow}
                     />
-                  }
-                />
-                <div className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__date'>
-                  {!runData?.isRunInfoLoading ? (
-                    <>
-                      <Icon name='calendar' fontSize={12} />
-                      <Text size={11} tint={70} weight={400}>
-                        {`${moment(
-                          runData?.runInfo?.creation_time * 1000,
-                        ).format(DATE_WITH_SECONDS)} • ${processDurationTime(
-                          runData?.runInfo?.creation_time * 1000,
-                          runData?.runInfo?.end_time
-                            ? runData?.runInfo?.end_time * 1000
-                            : dateNow,
-                        )}`}
-                      </Text>
-                    </>
-                  ) : (
-                    <Skeleton
-                      className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__Skeleton'
-                      variant='rect'
-                      height={24}
-                      width={340}
+                    <div className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__date'>
+                      {!runData?.isRunInfoLoading ? (
+                        <>
+                          <Icon name='calendar' fontSize={12} />
+                          <Text size={11} tint={70} weight={400}>
+                            {`${moment(
+                              runData?.runInfo?.creation_time * 1000,
+                            ).format(
+                              DATE_WITH_SECONDS,
+                            )} • ${processDurationTime(
+                              runData?.runInfo?.creation_time * 1000,
+                              runData?.runInfo?.end_time
+                                ? runData?.runInfo?.end_time * 1000
+                                : dateNow,
+                            )}`}
+                          </Text>
+                        </>
+                      ) : (
+                        <Skeleton
+                          className='RunDetail__runDetailContainer__appBarContainer__appBarTitleBox__Skeleton'
+                          variant='rect'
+                          height={24}
+                          width={340}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className='RunDetail__runDetailContainer__appBarContainer__appBarBox__explore'>
+                    <CompareSelectedRunsPopover
+                      appName={'run' as AppNameEnum} // @TODO: change to AppNameEnum.RUN
+                      query={`run.hash == "${runHash}"`}
+                      buttonText={'Explore'}
                     />
-                  )}
+                  </div>
+                  <div className='RunDetail__runDetailContainer__appBarContainer__appBarBox__actionContainer'>
+                    <NavLink to={`${url}/settings`}>
+                      <Button withOnlyIcon size='small' color='secondary'>
+                        <Icon name='edit' />
+                      </Button>
+                    </NavLink>
+                  </div>
                 </div>
               </div>
-              <div className='RunDetail__runDetailContainer__appBarContainer__appBarBox__explore'>
-                <CompareSelectedRunsPopover
-                  appName={'run' as AppNameEnum} // @TODO: change to AppNameEnum.RUN
-                  query={`run.hash == "${runHash}"`}
-                  buttonText={'Explore'}
-                />
-              </div>
-              <div className='RunDetail__runDetailContainer__appBarContainer__appBarBox__actionContainer'>
-                <NavLink to={`${url}/settings`}>
-                  <Button withOnlyIcon size='small' color='secondary'>
-                    <Icon name='edit' />
-                  </Button>
-                </NavLink>
-              </div>
-            </div>
-          </div>
-          <Paper className='RunDetail__runDetailContainer__tabsContainer'>
-            <Tabs
-              className='RunDetail__runDetailContainer__Tabs container'
-              value={getCurrentTabValue(pathname, url)}
-              onChange={handleTabChange}
-              indicatorColor='primary'
-              textColor='primary'
-            >
-              {Object.keys(tabs).map((tabKey: string) => (
-                <Tab
-                  key={`${url}/${tabKey}`}
-                  label={tabs[tabKey]}
-                  value={`${url}/${tabKey}`}
-                  component={Link}
-                  to={`${url}/${tabKey}`}
-                />
-              ))}
-            </Tabs>
-          </Paper>
+              <Paper className='RunDetail__runDetailContainer__tabsContainer'>
+                <Tabs
+                  className='RunDetail__runDetailContainer__Tabs container'
+                  value={getCurrentTabValue(pathname, url)}
+                  onChange={handleTabChange}
+                  indicatorColor='primary'
+                  textColor='primary'
+                >
+                  {Object.keys(tabs).map((tabKey: string) => (
+                    <Tab
+                      key={`${url}/${tabKey}`}
+                      label={tabs[tabKey]}
+                      value={`${url}/${tabKey}`}
+                      component={Link}
+                      to={`${url}/${tabKey}`}
+                    />
+                  ))}
+                </Tabs>
+              </Paper>
+            </>
+          ) : null}
           <BusyLoaderWrapper
             isLoading={runData?.isRunInfoLoading}
             height='calc(100vh - 98px)'
@@ -466,7 +478,10 @@ function RunDetail(): React.FunctionComponentElement<React.ReactNode> {
                         </React.Suspense>
                       </div>
                     ) : (
-                      <div className='RunDetail__runDetailContainer__tabPanelBox'>
+                      <div
+                        className='RunDetail__runDetailContainer__tabPanelBox'
+                        style={noHeader ? { height: '100vh' } : {}}
+                      >
                         <div className='RunDetail__runDetailContainer__tabPanel container'>
                           <React.Suspense
                             fallback={
